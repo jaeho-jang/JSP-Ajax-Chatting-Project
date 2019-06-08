@@ -34,7 +34,7 @@ public class UserDAO {
 			pstmt.setString(1, userID);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				if (rs.getString(userPassword).equals(userPassword)) {
+				if (rs.getString("userPassword").equals(userPassword)) {
 					return 1; // 로그인 성공
 				}
 				return 2; // 패스워드 오류

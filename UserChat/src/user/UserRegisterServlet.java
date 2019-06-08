@@ -42,6 +42,7 @@ public class UserRegisterServlet extends HttpServlet implements Servlet {
 		}
 		int result = new UserDAO().register(userID, userPassword1, userName, userAge, userGender, userEmail, userProfile);
 		if (result == 1) {
+			request.getSession().setAttribute("userID", userID);
 			request.getSession().setAttribute("messageType", "성공 메시지");
 			request.getSession().setAttribute("messageContent", "회원가입이 완료되었습니다.");
 			response.sendRedirect("index.jsp");
@@ -51,7 +52,5 @@ public class UserRegisterServlet extends HttpServlet implements Servlet {
 			response.sendRedirect("join.jsp");
 		}
 	}
-	
-	
 
 }

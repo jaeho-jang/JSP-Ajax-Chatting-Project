@@ -13,7 +13,7 @@
 		function registerCheckFunction() {
 			var userID = $('#userID').val(); // id 값으로 userID를 가지는 HTML요소의 value를 가져옴
 			$.ajax({
-				type: 'post',
+				type: 'POST',
 				url: './UserRegisterCheckServlet',
 				data: {userID: userID}, // 앞의 userID는 속성명, 뒤의 userID는 위에서 선언해준 userID에 담긴 값
 				success: function(result) {
@@ -45,6 +45,12 @@
 		if (session.getAttribute("userID") != null) {
 			userID = (String) session.getAttribute("userID");
 		}
+		if (userID != null) {
+			session.setAttribute("messageType", "오류 메시지");
+			session.setAttribute("messageContent", "현재 로그인이 되어 있는 상황입니다.");
+			response.sendRedirect("index.jsp");
+			return;
+		}
 	%>
 	<nav class="navbar navbar-default">
 		<div class="navbar-header">
@@ -74,17 +80,6 @@
 						<li><a href="login.jsp">로그인</a>
 						<li><a href="join.jsp">회원가입</a>
 					</ul>
-				</li>
-			</ul>
-			<%
-				} else {
-			%>
-			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle"
-					data-toggle="dropdown" role="buton" aria-haspopup="true"
-					aria-expanded="false">회원관리<span class="caret"></span>
-					</a>
 				</li>
 			</ul>
 			<%
