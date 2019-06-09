@@ -23,7 +23,7 @@ public class ChatSubmitServlet extends HttpServlet {
 				|| chatContent == null || chatContent.equals("")) {
 			response.getWriter().write("0");	
 		} else {
-			fromID = URLDecoder.decode(fromID, "UTF-8");
+			fromID = URLDecoder.decode(fromID, "UTF-8"); // URLDecoder.decode는 웹에 인코딩되어 넘어간 문자들을 그대로 가져와줌
 			toID = URLDecoder.decode(toID, "UTF-8");
 			chatContent = URLDecoder.decode(chatContent, "UTF-8");
 			response.getWriter().write(new ChatDAO().submit(fromID, toID, chatContent) + "");

@@ -45,7 +45,7 @@
 				type: "POST",
 				url: "./chatSubmitServlet",
 				data: {
-					fromID: encodeURIComponent(fromID),
+					fromID: encodeURIComponent(fromID), // encodeURIComponent는 넘어오는 string값에 특수문자가 포함되는 것을 고려하여 이스케이핑 해주는 용도
 					toID: encodeURIComponent(toID),
 					chatContent: encodeURIComponent(chatContent),
 				},
@@ -78,6 +78,9 @@
 					var parsed = JSON.parse(data);
 					var result = parsed.result;
 					for (var i = 0; i < result.length; i++) {
+						if (result[i][0].value == fromID) {
+							result[i][0].value = '나';
+						}
 						addChat(result[i][0].value, result[i][2].value, result[i][3].value);
 					}
 					lastID = Number(parsed.last);
@@ -129,7 +132,8 @@
 		</div>
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="index.jsp">메인</a></li>
+				<li><a href="index.jsp">메인</a></li>
+				<li><a href="find.jsp">친구찾기</a></li>
 			</ul>
 			<%
 				if (userID != null) {
