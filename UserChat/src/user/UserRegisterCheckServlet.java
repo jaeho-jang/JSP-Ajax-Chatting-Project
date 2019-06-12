@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 @WebServlet("/UserRegisterCheckServlet")
@@ -18,7 +19,9 @@ public class UserRegisterCheckServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		String userID = request.getParameter("userID");
-		if (userID == null || userID.equals("")) response.getWriter().write("-1");
+		HttpSession session = request.getSession();
+		String sessionUserID = (String) session.getAttribute("userID");
+		if (userID == null || userID.equals("") || userID.equals(sessionUserID)) response.getWriter().write("-1");
 		response.getWriter().write(new UserDAO().registerCheck(userID) + "");
 	}
 

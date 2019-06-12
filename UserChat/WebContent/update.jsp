@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="user.UserDAO" %>
+<%@ page import="user.UserDTO" %>
 <!DOCTYPE html>
 <html>
 	<%
@@ -12,6 +14,7 @@
 			response.sendRedirect("index.jsp");
 			return;
 		}
+		UserDTO user = new UserDAO().getUser(userID);
 	%>
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
@@ -22,41 +25,6 @@
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="js/bootstrap.js"></script>
 	<script type="text/javascript">
-		function findFunction() {
-			var userID = $('#findID').val();
-			$.ajax({
-				type: "POST",
-				url: './UserRegisterCheckServlet',
-				data: {	userID: userID },
-				success: function(result) {
-					if (result == 0) {
-						$('#checkMessage').html('친구찾기에 성공했습니다.');
-						$('#checkType').attr('class', 'modal-content panel-success');
-						getFriend(userID);
-					} else {
-						$('#checkMessage').html('친구를 찾을 수 없습니다.');
-						$('#checkType').attr('class', 'modal-content panel-warning');
-						failFriend();
-					}
-					$('#checkModal').modal("show");
-				}
-			});
-		}
-		function getFriend(findID) {
-			$('#friendResult').html('<thead>' +
-					'<tr>' + 
-					'<th><h4>검색 결과</h4></th>' + 
-					'</tr>' + 
-					'</thead>' + 
-					'<tbody>' + 
-					'<tr>' + 
-					'<td style="text-align: center;"><h3>' + findID + '</h3><a href="chat.jsp?toID=' + encodeURIComponent(findID) + '" class="btn btn-primary pull-right">' + '메시지 보내기</a></td>' + 
-					'</tr>' + 
-					'</tbody>');
-		}
-		function failFriend() {
-			$('#friendResult').html('');
-		}
 		function getUnread() {
 			$.ajax({
 				type: "POST",
@@ -81,6 +49,15 @@
 		function showUnread(result) {
 			$('#unread').html(result);
 		}
+		function passwordCheckFunction() {
+			var userPassword1 = $('#userPassword1').val();
+			var userPassword2 = $('#userPassword2').val();
+			if (userPassword1 != userPassword2) {
+				$('#passwordCheckMessage').html('비밀번호가 서로 일치하지 않습니다.');
+			} else {
+				$('#passwordCheckMessage').html('');
+			}
+		}	
 	</script>
 </head>
 <body>
@@ -98,7 +75,7 @@
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
 				<li><a href="index.jsp">메인</a></li>
-				<li class="active"><a href="find.jsp">친구찾기</a></li>
+				<li><a href="find.jsp">친구찾기</a></li>
 				<li><a href="box.jsp">메시지함<span id="unread" class="label label-info"></span></a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
@@ -108,7 +85,7 @@
 					aria-expanded="false">회원관리<span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu">
-						<li><a href="update.jsp">회원정보 수정</a>
+						<li class="active"><a href="update.jsp">회원정보 수정</a>
 						<li><a href="logoutAction.jsp">로그아웃</a>
 					</ul>
 				</li>
@@ -116,26 +93,62 @@
 		</div>
 	</nav>
 	<div class="container">
-		<table class="table table-bordered table-hover" style="text-align: center; border: 1px solid #dddddd">
-			<thead>
-				<tr>
-					<th colspan="2"><h4>검색으로 친구찾기</h4></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td style="width: 110px;"><h5>친구 아이디</h5></td>
-					<td><input class="form-control" type="text" id="findID" maxlength="20" placeholder="찾을 아이디를 입력하세요"></td>
-				</tr>
-				<tr>
-					<td colspan="2"><button class="btn btn-primary pull-right" onclick="findFunction();">검색</button></td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-	<div class="container">
-		<table id="friendResult" class="table table-bordered table-hover" style="text-align: center; border: 1px solid #dddddd">
-		</table>
+		<form method="post" action="./userUpdate">
+			<table class="table table-bordered table-hover" style="text-align: center; border: 1px solid #dddddd">
+				<thead>
+					<tr>
+						<th colspan="2"><h4>회원 정보 수정</h4></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td style="width: 110px;"><h5>아이디</h5></td>
+						<td>
+							<h5><%= user.getUserID() %></h5>
+							<input type="hidden" name="userID" value="<%= user.getUserID() %>">
+						</td>
+					</tr>
+					<tr>
+						<td style="width: 110px;"><h5>비밀번호</h5></td>
+						<td colspan="2"><input class="form-control" onkeyup="passwordCheckFunction();" type="password" id="userPassword1" name="userPassword1" maxlength="20" placeholder="비밀번호를 입력하세요."></td>
+					</tr>
+					<tr>
+						<td style="width: 110px;"><h5>비밀번호 확인</h5></td>
+						<td colspan="2"><input class="form-control" onkeyup="passwordCheckFunction();" type="password" id="userPassword2" name="userPassword2" maxlength="20" placeholder="비밀번호 확인을 입력하세요."></td>
+					</tr>
+					<tr>
+						<td style="width: 110px;"><h5>이름</h5></td>
+						<td colspan="2"><input class="form-control" type="text" id="userName" name="userName" maxlength="20" placeholder="이름을 입력하세요." value="<%= user.getUserName() %>"></td>
+					</tr>
+					<tr>
+						<td style="width: 110px;"><h5>나이</h5></td>
+						<td colspan="2"><input class="form-control" type="number" id="userAge" name="userAge" maxlength="20" placeholder="나이를 입력하세요." value="<%= user.getUserAge() %>"></td>
+					</tr>
+					<tr>
+						<td style="width: 110px;"><h5>성별</h5></td>
+						<td colspan="2">
+							<div class="form-group" style="text-align: center; margin:0 auto;">
+								<div class="btn-group" data-toggle="buttons">
+									<label class="btn btn-primary <% if (user.getUserGender().equals("남자")) out.print("active"); %>">
+										<input type="radio" name="userGender" autocomplete="off" value="남자" <% if (user.getUserGender().equals("남자")) out.print("checked"); %>>남자
+									</label>
+									<label class="btn btn-primary <% if (user.getUserGender().equals("여자")) out.print("active"); %>">
+										<input type="radio" name="userGender" autocomplete="off" value="여자" <% if (user.getUserGender().equals("여자")) out.print("checked"); %>>여자
+									</label>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td style="width: 110px;"><h5>이메일</h5></td>
+						<td colspan="2"><input class="form-control" type="email" id="userEmail" name="userEmail" maxlength="20" placeholder="이메일을 입력하세요." value="<%= user.getUserEmail() %>"></td>
+					</tr>
+					<tr>
+						<td style="text-align: left;" colspan="3"><h5 style="color: red;" id="passwordCheckMessage"></h5><input class="btn btn-primary pull-right" type="submit" value="수정"></td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
 	</div>
 	<%
 		String messageContent = null;
@@ -176,33 +189,10 @@
 		$('#messageModal').modal("show");
 	</script>
 	<%
-		session.removeAttribute("messageContent");
-		session.removeAttribute("messageType");
+			session.removeAttribute("messageContent");
+			session.removeAttribute("messageType");
 		}
 	%>
-	<div class="modal fade" id="checkModal" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="vertical-alignment-helper">
-			<div class="modal-dialog vertical-align-center">
-				<div id="checkType" class="modal-content panel-info">
-					<div class="modal-header panel-heading">
-						<button type="button" class="close" data-dismiss="modal">
-							<span aria-hidden="true">&times</span>
-							<span class="sr-only">Close</span>
-						</button>
-						<h4 class="modal-title">
-							확인 메시지
-						</h4>
-					</div>
-					<div class="modal-body">
-						<div id="checkMessage" class="modal-body"></div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
 	<%
 		if (userID != null) {
 	%>

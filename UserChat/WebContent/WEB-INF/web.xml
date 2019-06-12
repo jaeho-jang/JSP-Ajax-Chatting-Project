@@ -49,4 +49,20 @@
     <servlet-name>ChatUnreadServlet</servlet-name>
     <url-pattern>/chatUnread</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>ChatBoxServlet</servlet-name>
+    <servlet-class>chat.ChatBoxServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ChatBoxServlet</servlet-name>
+    <url-pattern>/chatBox</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>UserUpdateServlet</servlet-name>
+    <servlet-class>user.UserUpdateServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserUpdateServlet</servlet-name>
+    <url-pattern>/userUpdate</url-pattern>
+  </servlet-mapping>
 </web-app>
