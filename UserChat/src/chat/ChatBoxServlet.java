@@ -20,6 +20,7 @@ public class ChatBoxServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		String userID = request.getParameter("userID");
+		userID = URLDecoder.decode(userID, "UTF-8");
 		if (userID == null || userID.equals("")) {
 			response.getWriter().write("");
 		} else {
@@ -29,7 +30,6 @@ public class ChatBoxServlet extends HttpServlet {
 					response.getWriter().write("");
 					return;
 				}
-				userID = URLDecoder.decode(userID, "UTF-8");
 				response.getWriter().write(getBox(userID));
 			} catch (Exception e) {
 				e.printStackTrace();

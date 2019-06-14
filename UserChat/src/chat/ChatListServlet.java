@@ -19,13 +19,16 @@ public class ChatListServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		String fromID = request.getParameter("fromID");
+		fromID = URLDecoder.decode(fromID, "UTF-8");
 		String toID = request.getParameter("toID");
+		toID = URLDecoder.decode(toID, "UTF-8");
 		String listType = request.getParameter("listType");
+		listType = URLDecoder.decode(listType, "UTF-8");
 		if (fromID == null || fromID.equals("") || toID == null || toID.equals("") 
 				|| listType == null || listType.equals("")) {
 			response.getWriter().write("");	
 		} else if (listType.equals("ten")) {
-			response.getWriter().write(getTen(URLDecoder.decode(fromID, "UTF-8"), URLDecoder.decode(toID, "UTF-8")));
+			response.getWriter().write(getTen(fromID, toID));
 		} else {
 			try {
 				HttpSession session = request.getSession();
@@ -33,7 +36,7 @@ public class ChatListServlet extends HttpServlet {
 					response.getWriter().write("");
 					return;
 				}
-				response.getWriter().write(getID(URLDecoder.decode(fromID, "UTF-8"), URLDecoder.decode(toID, "UTF-8"), listType));
+				response.getWriter().write(getID(fromID, toID, listType));
 			} catch (Exception e) {
 				response.getWriter().write("");
 			}

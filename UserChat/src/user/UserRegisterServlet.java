@@ -24,7 +24,6 @@ public class UserRegisterServlet extends HttpServlet implements Servlet {
 		String userAge = request.getParameter("userAge");
 		String userGender = request.getParameter("userGender");
 		String userEmail = request.getParameter("userEmail");
-		String userProfile = request.getParameter("userProfile");
 		if (userID == null || userID.equals("") || userPassword1 == null || userPassword1.equals("")
 				|| userPassword2 == null || userPassword2.equals("") || userName == null || userName.equals("")
 				|| userAge == null || userAge.equals("") || userGender == null || userGender.equals("")
@@ -40,7 +39,7 @@ public class UserRegisterServlet extends HttpServlet implements Servlet {
 			response.sendRedirect("join.jsp");
 			return;
 		}
-		int result = new UserDAO().register(userID, userPassword1, userName, userAge, userGender, userEmail, userProfile);
+		int result = new UserDAO().register(userID, userPassword1, userName, userAge, userGender, userEmail, "");
 		if (result == 1) {
 			request.getSession().setAttribute("userID", userID);
 			request.getSession().setAttribute("messageType", "성공 메시지");
