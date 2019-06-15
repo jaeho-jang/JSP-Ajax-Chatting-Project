@@ -73,4 +73,12 @@
     <servlet-name>UserProfileServlet</servlet-name>
     <url-pattern>/userProfile</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>UserFindServlet</servlet-name>
+    <servlet-class>user.UserFindServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserFindServlet</servlet-name>
+    <url-pattern>/userFind</url-pattern>
+  </servlet-mapping>
 </web-app>

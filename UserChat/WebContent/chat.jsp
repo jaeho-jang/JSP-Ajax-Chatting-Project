@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.net.URLDecoder" %>
+<%@ page import="user.UserDAO" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,6 +31,8 @@
 			response.sendRedirect("index.jsp");
 			return;
 		}
+		String fromProfile = new UserDAO().getProfile(userID);
+		String toProfile = new UserDAO().getProfile(toID);
 	%>
 	<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -95,27 +98,51 @@
 			});
 		}
 		function addChat(chatName, chatContent, chatTime) {
-			$('#chatList').append('<div class="row">' + 
-					'<div class="col-lg-12">' + 
-					'<div class="media">' + 
-					'<a class="pull-left" href="#">' + 
-					'<img class="media-object img-circle" style="width: 40px; height: 40px;" src="images/icon.png" alt="">' + 
-					'</a>' + 
-					'<div class="media-body">' + 
-					'<h4 class="media-heading">' + 
-					chatName + 
-					'<span class="small pull-right">' + 
-					chatTime + 
-					'</span>' + 
-					'</h4>' + 
-					'<p>' + 
-					chatContent + 
-					'</p>' + 
-					'</div>' + 
-					'</div>' +
-					'</div>' + 
-					'</div>' +
-					'<hr>' );
+			if (chatName == '나') {
+				$('#chatList').append('<div class="row">' + 
+						'<div class="col-lg-12">' + 
+						'<div class="media">' + 
+						'<a class="pull-left" href="#">' + 
+						'<img class="media-object img-circle" style="width: 40px; height: 40px;" src="<%= fromProfile %>" alt="">' + 
+						'</a>' + 
+						'<div class="media-body">' + 
+						'<h4 class="media-heading">' + 
+						chatName + 
+						'<span class="small pull-right">' + 
+						chatTime + 
+						'</span>' + 
+						'</h4>' + 
+						'<p>' + 
+						chatContent + 
+						'</p>' + 
+						'</div>' + 
+						'</div>' +
+						'</div>' + 
+						'</div>' +
+						'<hr>' );
+			} else {
+				$('#chatList').append('<div class="row">' + 
+						'<div class="col-lg-12">' + 
+						'<div class="media">' + 
+						'<a class="pull-left" href="#">' + 
+						'<img class="media-object img-circle" style="width: 40px; height: 40px;" src="<%= toProfile %>" alt="">' + 
+						'</a>' + 
+						'<div class="media-body">' + 
+						'<h4 class="media-heading">' + 
+						chatName + 
+						'<span class="small pull-right">' + 
+						chatTime + 
+						'</span>' + 
+						'</h4>' + 
+						'<p>' + 
+						chatContent + 
+						'</p>' + 
+						'</div>' + 
+						'</div>' +
+						'</div>' + 
+						'</div>' +
+						'<hr>' );
+			}
 			$('#chatList').scrollTop($('#chatList')[0].scrollHeight);
 		}
 		function getInfiniteChat() {
