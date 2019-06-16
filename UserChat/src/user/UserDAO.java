@@ -59,29 +59,33 @@ public class UserDAO {
 	public int register(String userID, String userPassword, String userName, String userAge, String userGender, String userEmail, String userProfile) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		String SQL = "INSERT INTO USER VALUES (?, ?, ?, ?, ?, ?, ?)";
-		try {
-			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement(SQL);
-			pstmt.setString(1, userID);
-			pstmt.setString(2, userPassword);
-			pstmt.setString(3, userName);
-			pstmt.setInt(4, Integer.parseInt(userAge));
-			pstmt.setString(5, userGender);
-			pstmt.setString(6, userEmail);
-			pstmt.setString(7, userProfile);
-			return pstmt.executeUpdate();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
+		int result = registerCheck(userID);
+		if (result == 0) return 0;
+		else {
+			String SQL = "INSERT INTO USER VALUES (?, ?, ?, ?, ?, ?, ?)";
 			try {
-				if (pstmt != null) pstmt.close();
-				if (conn != null) conn.close();
+				conn = dataSource.getConnection();
+				pstmt = conn.prepareStatement(SQL);
+				pstmt.setString(1, userID);
+				pstmt.setString(2, userPassword);
+				pstmt.setString(3, userName);
+				pstmt.setInt(4, Integer.parseInt(userAge));
+				pstmt.setString(5, userGender);
+				pstmt.setString(6, userEmail);
+				pstmt.setString(7, userProfile);
+				return pstmt.executeUpdate();
 			} catch (Exception e) {
 				e.printStackTrace();
+			} finally {
+				try {
+					if (pstmt != null) pstmt.close();
+					if (conn != null) conn.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
+			return -1; // DB Error
 		}
-		return -1; // DB Error
 	}
 	
 	// 회원가입 시도

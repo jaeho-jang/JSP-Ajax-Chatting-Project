@@ -55,7 +55,7 @@
 					'<td style="text-align: center;">' + 
 					'<img class="media-object img-circle" style="max-width: 300px; margin: 0 auto;" src="' + userProfile + '">' + 
 					'</img>' + 
-					'<h3>' + findID + '</h3><a href="chat.jsp?toID=' + encodeURIComponent(findID) + '" class="btn btn-primary pull-right">' + '메시지 보내기</a></td>' + 
+					'<h3>' + findID + '</h3><a href="chat.jsp?toID=' + encodeURIComponent(findID) + '"class="btn btn-primary pull-right">' + '메시지 보내기</a></td>' + 
 					'</tr>' + 
 					'</tbody>');
 		}
