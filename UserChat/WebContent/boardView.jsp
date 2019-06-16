@@ -1,6 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
+	<%
+		String userID = null;
+		if (session.getAttribute("userID") != null) {
+			userID = (String) session.getAttribute("userID");
+		}
+	%>
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,14 +15,34 @@
 	<title>JSP Ajax 실시간 회원제 채팅</title>
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="js/bootstrap.js"></script>
+	<script type="text/javascript">
+		function getUnread() {
+			$.ajax({
+				type: "POST",
+				url: "./chatUnread",
+				data: {
+					userID: encodeURIComponent('<%= userID %>'),
+				},
+				success: function(result) {
+					if (result >= 1) {
+						showUnread(result);
+					} else {
+						showUnread('');
+					}
+				}
+			});
+		}
+		function getInfiniteUnread() {
+			setInterval(function() {
+				getUnread();
+			}, 4000);			
+		}
+		function showUnread(result) {
+			$('#unread').html(result);
+		}
+	</script>
 </head>
 <body>
-	<%
-		String userID = null;
-		if (session.getAttribute("userID") != null) {
-			userID = (String) session.getAttribute("userID");
-		}
-	%>
 	<nav class="navbar navbar-default">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" 
@@ -33,7 +59,7 @@
 				<li><a href="index.jsp">메인</a></li>
 				<li><a href="find.jsp">친구찾기</a></li>
 				<li><a href="box.jsp">메시지함<span id="unread" class="label label-info"></span></a></li>
-				<li><a href="boardView.jsp">자유게시판</a></li>
+				<li class="active"><a href="boardView.jsp">자유게시판</a></li>
 			</ul>
 			<%
 				if (userID == null) {
@@ -45,7 +71,7 @@
 						aria-expanded="false">접속하기<span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu">
-						<li class="active"><a href="login.jsp">로그인</a>
+						<li><a href="login.jsp">로그인</a>
 						<li><a href="join.jsp">회원가입</a>
 					</ul>
 				</li>
@@ -59,6 +85,11 @@
 					data-toggle="dropdown" role="buton" aria-haspopup="true"
 					aria-expanded="false">회원관리<span class="caret"></span>
 					</a>
+					<ul class="dropdown-menu">
+						<li><a href="update.jsp">회원정보 수정</a>
+						<li><a href="profileUpdate.jsp">프로필 수정</a></li>
+						<li><a href="logoutAction.jsp">로그아웃</a>
+					</ul>
 				</li>
 			</ul>
 			<%
@@ -67,28 +98,32 @@
 		</div>
 	</nav>
 	<div class="container">
-		<form method="POST" action="./userLogin">
-			<table class="table table-bordered table-hover" style="text-align: center; border: 1px solid #dddddd">
-				<thead>
-					<tr>
-						<th colspan="2"><h4>로그인</h4></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td style="width: 110px;"><h5>아이디</h5></td>
-						<td><input class="form-control" type="text" name="userID" maxlength="20" placeholder="아이디를 입력하세요."></td>
-					</tr>
-					<tr>
-						<td style="width: 110px;"><h5>비밀번호</h5></td>
-						<td><input class="form-control" type="password" name="userPassword" maxlength="20" placeholder="비밀번호를 입력하세요."></td>
-					</tr>
-					<tr>
-						<td style="text-align: left;" colspan="2"><input class="btn btn-primary pull-right" type="submit" value="로그인"></td>
-					</tr>
-				</tbody>
-			</table>
-		</form>
+		<table class="table table-bordered table-hover" style="text-align: center; border: 1px solid #dddddd">
+			<thead>
+				<tr>
+					<th colspan="5"><h4>자유 게시판</h4></th>
+				</tr>
+				<tr>
+					<th style="background-color: #fafafa; color: #000000; width: 70px;"><h5>번호</h5></th>
+					<th style="background-color: #fafafa; color: #000000;"><h5>제목</h5></th>
+					<th style="background-color: #fafafa; color: #000000;"><h5>작성자</h5></th>
+					<th style="background-color: #fafafa; color: #000000; width: 70px; width: 100px;"><h5>작성 날짜</h5></th>
+					<th style="background-color: #fafafa; color: #000000; width: 70px; width: 70px;"><h5>조회수</h5></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td>안녕하세요.</td>
+					<td>2222.</td>
+					<td>안녕하3세요.</td>
+					<td>안녕하3세요.</td>
+				</tr>
+				<tr>
+					<td colspan="5"><a href="boardWrite.jsp" class="btn btn-primary pull-right" type="submit">글쓰기</a></td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 	<%
 		String messageContent = null;
@@ -131,6 +166,18 @@
 	<%
 		session.removeAttribute("messageContent");
 		session.removeAttribute("messageType");
+		}
+	%>
+	<%
+		if (userID != null) {
+	%>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				getUnread();
+				getInfiniteUnread();
+			});
+		</script>
+	<%
 		}
 	%>
 </body>
